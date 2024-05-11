@@ -78,7 +78,7 @@
             HR Management
         </div>
         <div>
-            <label for="username">Username:</label>
+            <label for="username">Username: 5115 55</label>
             <input type="text" id="TxtUsername" name="username" runat="server" />
             <br />
             <label for="password">Password:</label>
