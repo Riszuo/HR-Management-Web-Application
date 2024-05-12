@@ -184,7 +184,7 @@ namespace HRWebsite
             }
             catch (Exception ex)
             {
-                // Handle exception
+                lblMessage.Text = "Error deleting user: " + ex.Message;
             }
             finally
             {
