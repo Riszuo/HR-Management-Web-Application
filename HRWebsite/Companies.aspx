@@ -87,14 +87,14 @@
 
                             <%-- Delete Company --%>
                             <asp:TemplateField>
-                            <ItemTemplate>
-                                <asp:LinkButton ID="lbDelCompany" Text="Del" runat="server"
-                                    OnClientClick='<%# GetClientClickConfirmation() %>'
-                                    CommandName="Delete" Enabled='<%# GetDeleteButtonEnabled() %>' />
-                            </ItemTemplate>
-                            <HeaderStyle HorizontalAlign="Left" />
-                            <ItemStyle HorizontalAlign="Center" Width="50px" />
-                        </asp:TemplateField>
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="lbDelCompany" Text="Del" runat="server"
+                                        OnClientClick='<%# GetClientClickConfirmation() %>'
+                                        CommandName="Delete" Enabled='<%# GetDeleteButtonEnabled() %>' />
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Left" />
+                                <ItemStyle HorizontalAlign="Center" Width="50px" />
+                            </asp:TemplateField>
 
 
                             <%-- Update Company --%>

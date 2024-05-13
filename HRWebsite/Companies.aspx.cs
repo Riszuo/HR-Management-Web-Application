@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.Services.Description;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -74,7 +75,8 @@ namespace HRWebsite
             // Redirect if the user is a branch manager
             if (IsBranchManager())
             {
-                Response.Redirect("~/Companies.aspx");
+                // Display Unauthorized Permission message
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Companies.aspx") + "';", true);
                 return;
             }
 
@@ -150,7 +152,8 @@ namespace HRWebsite
             // Redirect if the user is a branch manager
             if (IsBranchManager())
             {
-                Response.Redirect("~/Companies.aspx");
+                // Display Unauthorized Permission message
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Companies.aspx") + "';", true);
                 return;
             }
 
@@ -199,13 +202,7 @@ namespace HRWebsite
             finally { myCon.Close(); }
         }
         private void UpdCompany()
-        {
-            // Redirect if the user is a branch manager
-            if (IsBranchManager())
-            {
-                Response.Redirect("~/Companies.aspx");
-                return;
-            }
+        {         
 
             try
             {
@@ -260,7 +257,7 @@ namespace HRWebsite
         {
             if (IsBranchManager())
             {
-                return "return false;";
+                return "alert('Unauthorized Permission'); return false;";
             }
             else
             {

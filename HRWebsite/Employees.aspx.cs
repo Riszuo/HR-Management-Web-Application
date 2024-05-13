@@ -55,17 +55,36 @@ namespace HRWebsite
             try
             {
                 myCon.Open();
-                using (SqlCommand myCom = new SqlCommand("dbo.usp_GetEmployees", myCon))
+
+                if (IsBranchManager())
                 {
-                    myCom.Connection = myCon;
-                    myCom.CommandType = CommandType.StoredProcedure;
+                    using (SqlCommand myCom = new SqlCommand("dbo.usp_GetEmployeesBr", myCon))
+                    {
+                        myCom.Connection = myCon;
+                        myCom.CommandType = CommandType.StoredProcedure;
 
-                    SqlDataReader myDr = myCom.ExecuteReader();
+                        SqlDataReader myDr = myCom.ExecuteReader();
 
-                    gvEmployees.DataSource = myDr;
-                    gvEmployees.DataBind();
+                        gvEmployees.DataSource = myDr;
+                        gvEmployees.DataBind();
 
-                    myDr.Close();
+                        myDr.Close();
+                    }
+                }
+                else
+                {
+                    using (SqlCommand myCom = new SqlCommand("dbo.usp_GetEmployees", myCon))
+                    {
+                        myCom.Connection = myCon;
+                        myCom.CommandType = CommandType.StoredProcedure;
+
+                        SqlDataReader myDr = myCom.ExecuteReader();
+
+                        gvEmployees.DataSource = myDr;
+                        gvEmployees.DataBind();
+
+                        myDr.Close();
+                    }
                 }
             }
             catch (Exception ex) { lblMessage.Text = "Error in Employees doGridView: " + ex.Message; }
@@ -76,7 +95,8 @@ namespace HRWebsite
             // Redirect if the user is a branch manager
             if (IsBranchManager())
             {
-                Response.Redirect("~/Employees.aspx");
+                // Display Unauthorized Permission message
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Employees.aspx") + "';", true);
                 return;
             }
             try
@@ -128,7 +148,8 @@ namespace HRWebsite
                 // Redirect if the user is a branch manager
                 if (IsBranchManager())
                 {
-                    Response.Redirect("~/Employees.aspx");
+                    // Display Unauthorized Permission message
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Employees.aspx") + "';", true);
                     return;
                 }
 
@@ -154,7 +175,8 @@ namespace HRWebsite
             // Redirect if the user is a branch manager
             if (IsBranchManager())
             {
-                Response.Redirect("~/Employees.aspx");
+                // Display Unauthorized Permission message
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Employees.aspx") + "';", true);
                 return;
             }
 
@@ -180,22 +202,48 @@ namespace HRWebsite
             try
             {
                 myCon.Open();
-                using (SqlCommand myCmd = new SqlCommand("dbo.usp_GetEmployee", myCon))
-                {
-                    myCmd.Connection = myCon;
-                    myCmd.CommandType = CommandType.StoredProcedure;
-                    myCmd.Parameters.Add("@ID", SqlDbType.Int).Value = emp_ID;
-                    SqlDataReader myDr = myCmd.ExecuteReader();
 
-                    if (myDr.HasRows)
+
+                if (IsBranchManager())
+                {
+                    using (SqlCommand myCmd = new SqlCommand("dbo.usp_GetEmployeeBr", myCon))
                     {
-                        while (myDr.Read())
+                        myCmd.CommandType = CommandType.StoredProcedure;
+                        myCmd.Parameters.Add("@ID", SqlDbType.Int).Value = emp_ID;
+                        SqlDataReader myDr = myCmd.ExecuteReader();
+
+                        if (myDr.HasRows)
                         {
-                            txtEmployeeName.Text = myDr.GetValue(1).ToString();
-                            txtContactNo.Text = myDr.GetValue(2).ToString();
-                            txtEmail.Text = myDr.GetValue(3).ToString();
-                            ddlCompany.SelectedValue = myDr.GetValue(4).ToString();
-                            lblEmpID.Text = Emp_ID.ToString();
+                            while (myDr.Read())
+                            {
+                                txtEmployeeName.Text = myDr.GetValue(1).ToString();
+                                txtContactNo.Text = myDr.GetValue(2).ToString();
+                                txtEmail.Text = myDr.GetValue(3).ToString();
+                                ddlCompany.SelectedValue = myDr.GetValue(4).ToString();
+                                lblEmpID.Text = emp_ID.ToString(); // Corrected to emp_ID instead of Emp_ID
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    using (SqlCommand myCmd = new SqlCommand("dbo.usp_GetEmployee", myCon))
+                    {
+                        myCmd.Connection = myCon;
+                        myCmd.CommandType = CommandType.StoredProcedure;
+                        myCmd.Parameters.Add("@ID", SqlDbType.Int).Value = emp_ID;
+                        SqlDataReader myDr = myCmd.ExecuteReader();
+
+                        if (myDr.HasRows)
+                        {
+                            while (myDr.Read())
+                            {
+                                txtEmployeeName.Text = myDr.GetValue(1).ToString();
+                                txtContactNo.Text = myDr.GetValue(2).ToString();
+                                txtEmail.Text = myDr.GetValue(3).ToString();
+                                ddlCompany.SelectedValue = myDr.GetValue(4).ToString();
+                                lblEmpID.Text = Emp_ID.ToString();
+                            }
                         }
                     }
                 }
@@ -208,7 +256,8 @@ namespace HRWebsite
             // Redirect if the user is a branch manager
             if (IsBranchManager())
             {
-                Response.Redirect("~/Employees.aspx");
+                // Display Unauthorized Permission message
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Employees.aspx") + "';", true);
                 return;
             }
             try
@@ -263,7 +312,7 @@ namespace HRWebsite
         {
             if (IsBranchManager())
             {
-                return "return false;";
+                return "alert('Unauthorized Permission'); return false;";
             }
             else
             {
