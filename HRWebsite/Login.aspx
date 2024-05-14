@@ -79,10 +79,10 @@
         </div>
         <div>
             <label for="username">Username:</label>
-            <input type="text" id="TxtUsername" name="username" runat="server" />
+            <input type="text" id="TxtUsername" name="username" runat="server" autocomplete="off" />
             <br />
             <label for="password">Password:</label>
-            <input type="password" id="TxtPassword" name="password" runat="server" />
+            <input type="password" id="TxtPassword" name="password" runat="server" autocomplete="off" />
             <br />
             <asp:Button ID="BtnLogin" runat="server" Text="Login" OnClick="BtnLogin_Click" />
             <br />

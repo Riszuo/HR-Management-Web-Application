@@ -71,6 +71,21 @@ namespace HRWebsite
                         myDr.Close();
                     }
                 }
+                else if (IsWestsideManager())
+                {
+                    using (SqlCommand myCom = new SqlCommand("dbo.usp_GetWestsideEmployees", myCon))
+                    {
+                        myCom.Connection = myCon;
+                        myCom.CommandType = CommandType.StoredProcedure;
+
+                        SqlDataReader myDr = myCom.ExecuteReader();
+
+                        gvEmployees.DataSource = myDr;
+                        gvEmployees.DataBind();
+
+                        myDr.Close();
+                    }
+                }
                 else
                 {
                     using (SqlCommand myCom = new SqlCommand("dbo.usp_GetEmployees", myCon))
@@ -92,8 +107,8 @@ namespace HRWebsite
         }
         protected void lbNewEmp_Click(object sender, EventArgs e)
         {
-            // Redirect if the user is a branch manager
-            if (IsBranchManager())
+            // Redirect if the user is a branch manager  or westside manager
+            if (IsBranchManager() || IsWestsideManager())
             {
                 // Display Unauthorized Permission message
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Employees.aspx") + "';", true);
@@ -145,8 +160,8 @@ namespace HRWebsite
         {
             if (e.CommandName == "UpdEmployee")
             {
-                // Redirect if the user is a branch manager
-                if (IsBranchManager())
+                // Redirect if the user is a branch manager or westside manager
+                if (IsBranchManager() || IsWestsideManager())
                 {
                     // Display Unauthorized Permission message
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Employees.aspx") + "';", true);
@@ -172,8 +187,8 @@ namespace HRWebsite
         }
         protected void gvEmployees_RowDeleting(Object sender, GridViewDeleteEventArgs e)
         {
-            // Redirect if the user is a branch manager
-            if (IsBranchManager())
+            // Redirect if the user is a branch manager  or westside manager
+            if (IsBranchManager() || IsWestsideManager())
             {
                 // Display Unauthorized Permission message
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "UnauthorizedAlert", "alert('Unauthorized Permission'); window.location = '" + ResolveClientUrl("~/Employees.aspx") + "';", true);
@@ -225,6 +240,27 @@ namespace HRWebsite
                         }
                     }
                 }
+                else if (IsWestsideManager())
+                {
+                    using (SqlCommand myCmd = new SqlCommand("dbo.usp_GetWestsideEmployee", myCon))
+                    {
+                        myCmd.CommandType = CommandType.StoredProcedure;
+                        myCmd.Parameters.Add("@ID", SqlDbType.Int).Value = emp_ID;
+                        SqlDataReader myDr = myCmd.ExecuteReader();
+
+                        if (myDr.HasRows)
+                        {
+                            while (myDr.Read())
+                            {
+                                txtEmployeeName.Text = myDr.GetValue(1).ToString();
+                                txtContactNo.Text = myDr.GetValue(2).ToString();
+                                txtEmail.Text = myDr.GetValue(3).ToString();
+                                ddlCompany.SelectedValue = myDr.GetValue(4).ToString();
+                                lblEmpID.Text = emp_ID.ToString(); // Corrected to emp_ID instead of Emp_ID
+                            }
+                        }
+                    }
+                }
                 else
                 {
                     using (SqlCommand myCmd = new SqlCommand("dbo.usp_GetEmployee", myCon))
@@ -253,7 +289,7 @@ namespace HRWebsite
         }
         private void UpdEmployee()
         {
-            // Redirect if the user is a branch manager
+            // Redirect if the user is a branch manager 
             if (IsBranchManager())
             {
                 // Display Unauthorized Permission message
@@ -308,9 +344,19 @@ namespace HRWebsite
             return role == "branch_manager";
         }
 
+        protected bool IsWestsideManager()
+        {
+            string role = Session["UserID"]?.ToString();
+            return role == "westside_manager";
+        }
+
         protected string GetClientClickConfirmation()
         {
             if (IsBranchManager())
+            {
+                return "alert('Unauthorized Permission'); return false;";
+            }
+            else if (IsWestsideManager())
             {
                 return "alert('Unauthorized Permission'); return false;";
             }
@@ -322,7 +368,7 @@ namespace HRWebsite
 
         protected bool GetDeleteButtonEnabled()
         {
-            return !IsBranchManager();
+            return !IsBranchManager() && !IsWestsideManager();
         }
     }
 }

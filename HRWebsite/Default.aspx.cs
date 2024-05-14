@@ -23,7 +23,7 @@ namespace HRWebsite
         {
             // Check if the user is admin, head HR manager, or branch manager
             string userID = Session["UserID"].ToString();
-            if (userID == "admin" || userID == "hr_manager" || userID == "branch_manager")
+            if (userID == "admin" || userID == "hr_manager" || userID == "branch_manager" || userID == "westside_manager")
             {
                 Response.Redirect("~/Default.aspx");
             }
@@ -53,7 +53,7 @@ namespace HRWebsite
         {
             // Check if the user is admin or head HR manager
             string userID = Session["UserID"].ToString();
-            if (userID == "admin" || userID == "hr_manager" || userID == "branch_manager")
+            if (userID == "admin" || userID == "hr_manager" || userID == "branch_manager" || userID == "westside_manager")
             {
                 Response.Redirect("~/Employees.aspx");
             }

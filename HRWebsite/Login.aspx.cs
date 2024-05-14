@@ -59,6 +59,10 @@ namespace HRWebsite
                                 Session["UserID"] = "branch_manager";
                                 Response.Redirect("Default.aspx");
                                 break;
+                            case "Westside Manager":
+                                Session["UserID"] = "westside_manager";
+                                Response.Redirect("Default.aspx");
+                                break;
                             default:
                                 lblMessage.Text = "Invalid Role";
                                 break;
@@ -66,7 +70,7 @@ namespace HRWebsite
                     }
                     else
                     {
-                        lblMessage.Text = "Invalid User";
+                        lblMessage.Text = "Invalid Username or Password";
                     }
                 }
             }
